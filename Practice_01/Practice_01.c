@@ -32,7 +32,37 @@ void filter(list);  /*сведения о сооружениях определ�
 void search(list);  /*поиск самой старой постройки*/
 list delete_node(list);  /*удаление первого узла списка*/
 
-
 int main()
 {
+    int menu;
+    do
+    {
+        system("CLS"); /* для windows, для linux system("clear") */
+        puts("Choose an action:\n");
+        puts("1. Insert");
+        puts("2. Show");
+        puts("3. Filter");
+        puts("4. Search");
+        puts("5. Delete");
+        puts("6. Exit");
+        menu = getch();
+        if (menu == 54)
+            break;
+        switch (menu)
+        {
+            case 49: puts("\nYou select insert"); break;
+            case 50: puts("\nYou select show"); break;
+            case 51: puts("\nYou select filter"); break;
+            case 52: puts("\nYou select search"); break;
+            case 53: puts("\nYou select delete"); break;
+            default:
+                puts("Wrong value");
+                printf("%d", menu);
+                break;
+        }
+        puts("\nPress any key...");
+        getch();
+    } while (1);
+    return 0;
 }
+
