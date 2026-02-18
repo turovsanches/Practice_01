@@ -58,7 +58,10 @@ int main()
                 puts("\nYou select insert");
                 buildings = new_node(buildings, input_building());
                 break;
-            case 50: puts("\nYou select show"); break;
+            case 50: 
+                puts("\nYou select show");
+                show(buildings);
+                break;
             case 51: puts("\nYou select filter"); break;
             case 52: puts("\nYou select search"); break;
             case 53: puts("\nYou select delete"); break;
@@ -123,3 +126,30 @@ list new_node(list head, DataType building)
     return temp;
 }
 
+void show(list cur)
+{
+    int k = 0;
+    system("CLS");
+    if (cur == NULL)
+    {
+        puts("List is empty");
+        getchar();
+        return;
+    }
+    puts("------------------------------------------------------------------------------------------------------");
+    puts("|  N |            Name            |      Location      |      Type     |      Architect     |  Year  |");
+    puts("------------------------------------------------------------------------------------------------------");
+    while (cur)
+    {
+        printf("|%3d | %-26s | %-18s | %-13s | %-18s | %6d |\n",
+            ++k,
+            cur->data.name,
+            cur->data.location,
+            cur->data.type,
+            cur->data.architect,
+            cur->data.year);
+        cur = cur->next;
+    }
+    puts("------------------------------------------------------------------------------------------------------");
+    getchar();
+}
