@@ -64,7 +64,10 @@ int main()
                 break;
             case 51: puts("\nYou select filter"); break;
             case 52: puts("\nYou select search"); break;
-            case 53: puts("\nYou select delete"); break;
+            case 53: 
+                puts("\nYou select delete");
+                buildings = delete_node(buildings);
+                break;
             default:
                 puts("Wrong value");
                 printf("%d", menu);
@@ -152,4 +155,20 @@ void show(list cur)
     }
     puts("------------------------------------------------------------------------------------------------------");
     getchar();
+}
+
+list delete_node(list head)
+{
+    struct node* temp;
+    if (head)
+    {
+        temp = head;
+        head = head->next;
+        free(temp);
+        puts("Deleted");
+    }
+    if (head == NULL)
+        puts("List is empty");
+    getchar();
+    return head;
 }
