@@ -3,6 +3,8 @@
 Вывести сведения о сооружениях определенного типа, например, «собор», построенных до указанного века. Найти самый старый архитектурный памятник.*/
 #define  _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct building
 {
@@ -34,6 +36,8 @@ list delete_node(list);  /*удаление первого узла списка
 
 int main()
 {
+    
+    list buildings = NULL;
     int menu;
     do
     {
@@ -50,7 +54,10 @@ int main()
             break;
         switch (menu)
         {
-            case 49: puts("\nYou select insert"); break;
+            case 49: 
+                puts("\nYou select insert");
+                buildings = new_node(buildings, input_building());
+                break;
             case 50: puts("\nYou select show"); break;
             case 51: puts("\nYou select filter"); break;
             case 52: puts("\nYou select search"); break;
@@ -64,5 +71,55 @@ int main()
         getch();
     } while (1);
     return 0;
+}
+
+DataType input_building(void)
+{
+    struct building building;
+    char* ptmp;
+
+    // 1. Название
+    puts("Enter name:");
+    fgets(building.name, 30, stdin);
+    ptmp = strchr(building.name, '\n');
+    if (ptmp) *ptmp = '\0';
+    else while (getchar() != '\n');
+
+    // 2. Местоположение
+    puts("Enter location:");
+    fgets(building.location, 50, stdin);
+    ptmp = strchr(building.location, '\n');
+    if (ptmp) *ptmp = '\0';
+    else while (getchar() != '\n');
+
+    // 3. Тип (например, "собор")
+    puts("Enter type:");
+    fgets(building.type, 15, stdin);
+    ptmp = strchr(building.type, '\n');
+    if (ptmp) *ptmp = '\0';
+    else while (getchar() != '\n');
+
+    // 4. Архитектор
+    puts("Enter architect:");
+    fgets(building.architect, 30, stdin);
+    ptmp = strchr(building.architect, '\n');
+    if (ptmp) *ptmp = '\0';
+    else while (getchar() != '\n');
+
+    // 5. Год
+    puts("Enter year:");
+    // Используем %d, так как год — целое число (int)
+    // Добавляем %*c, чтобы съесть Enter после ввода числа
+    scanf("%d%*c", &building.year);
+
+    return building;
+}
+
+list new_node(list head, DataType building)
+{
+    list temp = (list)malloc(sizeof(struct node));
+    temp->data = building;
+    temp->next = head;
+    return temp;
 }
 
