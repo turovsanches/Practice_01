@@ -36,8 +36,11 @@ list delete_node(list);  /*удаление первого узла списка
 
 int main()
 {
-    
+    char file[50];
     list buildings = NULL;
+    puts("Enter the file name");
+    gets(file);
+    buildings = read_file(file);
     int menu;
     do
     {
@@ -76,6 +79,8 @@ int main()
         puts("\nPress any key...");
         getch();
     } while (1);
+    if (write_file(file, buildings))
+        puts("File saved");
     return 0;
 }
 
@@ -174,4 +179,49 @@ list delete_node(list head)
     puts("Press Enter to continue...");
     getchar();
     return head;
+}
+
+list read_file(char* filename)
+{
+    FILE* f;
+    DataType building;
+    list head = NULL, cur;
+    if ((f = fopen(filename, "rb")) == NULL)
+    {
+        perror("Error open file");
+        puts("List is empty");
+        getchar();
+        return NULL;
+    }
+    if (fread(&building, sizeof(building), 1, f))
+        head = new_node(NULL, building);
+    else
+        return NULL;
+    cur = head;
+    while (fread(&building, sizeof(building), 1, f))
+    {
+        cur->next = new_node(NULL, building);
+        cur = cur->next;
+    }
+    fclose(f);
+    return head;
+}
+
+int write_file(char* filename, list head)
+{
+    FILE* f;
+    if ((f = fopen(filename, "wb")) == NULL)
+    {
+        perror("Error create file");
+        getchar();
+        return 0;
+    }
+    while (head)
+    {
+        if (fwrite(&head->data, sizeof(DataType), 1, f))
+            head = head->next;
+        else
+            return 0;
+    }
+    return 1;
 }
