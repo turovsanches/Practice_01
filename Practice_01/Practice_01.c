@@ -136,6 +136,7 @@ void show(list cur)
     if (cur == NULL)
     {
         puts("List is empty");
+        puts("Press Enter to continue...");
         getchar();
         return;
     }
@@ -154,6 +155,7 @@ void show(list cur)
         cur = cur->next;
     }
     puts("------------------------------------------------------------------------------------------------------");
+    puts("Press Enter to continue...");
     getchar();
 }
 
@@ -169,6 +171,7 @@ list delete_node(list head)
     }
     if (head == NULL)
         puts("List is empty");
+    puts("Press Enter to continue...");
     getchar();
     return head;
 }
