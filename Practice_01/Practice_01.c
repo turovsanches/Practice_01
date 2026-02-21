@@ -66,7 +66,15 @@ int main()
                 show(buildings);
                 break;
             case 51: puts("\nYou select filter"); break;
-            case 52: puts("\nYou select search"); break;
+            case 52: 
+                puts("\nYou select search");
+                if (buildings == NULL) {
+                    puts("List is empty");
+                }
+                else {
+                    search(buildings);
+                }
+                break;
             case 53: 
                 puts("\nYou select delete");
                 buildings = delete_node(buildings);
@@ -225,3 +233,29 @@ int write_file(char* filename, list head)
     }
     return 1;
 }
+
+void search(list cur)
+{
+    if (cur == NULL) {
+        puts("List is empty");
+        return;
+    }
+
+    list oldest = cur; // Предполагаем, что первый — самый старый
+    list temp = cur->next;
+
+    while (temp) {
+        if (temp->data.year < oldest->data.year) {
+            oldest = temp;
+        }
+        temp = temp->next;
+    }
+
+    // Вывод результата
+    puts("\nOldest building found:");
+    printf("Name: %s, Year: %d, Location: %s\n",
+        oldest->data.name,
+        oldest->data.year,
+        oldest->data.location);
+}
+
