@@ -30,15 +30,17 @@ list read_file(char* filename);   /*чтение данных из файла в
 list new_node(list, DataType);     /*создание узла*/
 int write_file(char* filename, list); /*запись содержимого списка в файл*/
 void show(list);  /*вывод содержимого списка на экран*/
-void filter(list);  /*сведения о сооружениях определенного типа*/
+list filter(list);  /*сведения о сооружениях определенного типа*/
 void search(list);  /*поиск самой старой постройки*/
 list delete_node(list);  /*удаление первого узла списка*/
+void any_key(); /*Press any key*/
+char* read_string(char*, int); /*Ввод переменных*/
 
 int main()
 {
     char file[50];
     list buildings = NULL;
-    puts("Enter the file name");
+    puts("Enter the file name:");
     gets(file);
     buildings = read_file(file);
     int menu;
@@ -65,13 +67,18 @@ int main()
                 puts("\nYou select show");
                 show(buildings);
                 break;
-            case 51: puts("\nYou select filter"); break;
+            case 51: 
+                puts("\nYou select filter");
+                show(filter(buildings));
+                break;
             case 52: 
                 puts("\nYou select search");
-                if (buildings == NULL) {
+                if (buildings == NULL) 
+                {
                     puts("List is empty");
                 }
-                else {
+                else
+                {
                     search(buildings);
                 }
                 break;
@@ -84,8 +91,7 @@ int main()
                 printf("%d", menu);
                 break;
         }
-        puts("\nPress any key...");
-        getch();
+        any_key();
     } while (1);
     if (write_file(file, buildings))
         puts("File saved");
@@ -99,31 +105,19 @@ DataType input_building(void)
 
     // 1. Название
     puts("Enter name:");
-    fgets(building.name, 30, stdin);
-    ptmp = strchr(building.name, '\n');
-    if (ptmp) *ptmp = '\0';
-    else while (getchar() != '\n');
+    read_string(building.name, 30);
 
     // 2. Местоположение
     puts("Enter location:");
-    fgets(building.location, 50, stdin);
-    ptmp = strchr(building.location, '\n');
-    if (ptmp) *ptmp = '\0';
-    else while (getchar() != '\n');
+    read_string(building.location, 50);
 
     // 3. Тип (например, "собор")
     puts("Enter type:");
-    fgets(building.type, 15, stdin);
-    ptmp = strchr(building.type, '\n');
-    if (ptmp) *ptmp = '\0';
-    else while (getchar() != '\n');
-
+    read_string(building.type, 15);
+   
     // 4. Архитектор
     puts("Enter architect:");
-    fgets(building.architect, 30, stdin);
-    ptmp = strchr(building.architect, '\n');
-    if (ptmp) *ptmp = '\0';
-    else while (getchar() != '\n');
+    read_string(building.architect, 30);
 
     // 5. Год
     puts("Enter year:");
@@ -149,8 +143,6 @@ void show(list cur)
     if (cur == NULL)
     {
         puts("List is empty");
-        puts("Press Enter to continue...");
-        getchar();
         return;
     }
     puts("------------------------------------------------------------------------------------------------------");
@@ -168,8 +160,6 @@ void show(list cur)
         cur = cur->next;
     }
     puts("------------------------------------------------------------------------------------------------------");
-    puts("Press Enter to continue...");
-    getchar();
 }
 
 list delete_node(list head)
@@ -184,8 +174,6 @@ list delete_node(list head)
     }
     if (head == NULL)
         puts("List is empty");
-    puts("Press Enter to continue...");
-    getchar();
     return head;
 }
 
@@ -196,9 +184,8 @@ list read_file(char* filename)
     list head = NULL, cur;
     if ((f = fopen(filename, "rb")) == NULL)
     {
-        perror("Error open file");
-        puts("List is empty");
-        getchar();
+        puts("File not found. List is empty.");
+        any_key();
         return NULL;
     }
     if (fread(&building, sizeof(building), 1, f))
@@ -221,7 +208,7 @@ int write_file(char* filename, list head)
     if ((f = fopen(filename, "wb")) == NULL)
     {
         perror("Error create file");
-        getchar();
+        any_key();
         return 0;
     }
     while (head)
@@ -236,7 +223,8 @@ int write_file(char* filename, list head)
 
 void search(list cur)
 {
-    if (cur == NULL) {
+    if (cur == NULL) 
+    {
         puts("List is empty");
         return;
     }
@@ -244,8 +232,10 @@ void search(list cur)
     list oldest = cur; // Предполагаем, что первый — самый старый
     list temp = cur->next;
 
-    while (temp) {
-        if (temp->data.year < oldest->data.year) {
+    while (temp) 
+    {
+        if (temp->data.year < oldest->data.year) 
+        {
             oldest = temp;
         }
         temp = temp->next;
@@ -259,3 +249,47 @@ void search(list cur)
         oldest->data.location);
 }
 
+void any_key()
+{
+    puts("\nPress any key...");
+    getch();
+}
+
+char* read_string(char* temp, int len)
+{
+    char* ptmp;
+
+    fgets(temp, len, stdin);
+    ptmp = strchr(temp, '\n');
+    if (ptmp) *ptmp = '\0';
+    else while (getchar() != '\n');
+
+    return temp;
+}
+
+
+list filter(list head)
+{
+    char type[15];
+    int century;
+    list filtered_list = NULL;
+
+    puts("Enter building type:");
+    read_string(type, 15);
+    puts("Enter century:");
+    scanf("%d%*c", &century);
+
+    int maxyear = (century - 1) * 100;
+
+    list temp = head;
+    while (temp)
+    {
+        if (strcmp(temp->data.type, type) == 0 && temp->data.year < maxyear)
+        {
+            filtered_list = new_node(filtered_list, temp->data);
+        }
+        temp = temp->next;    
+    }
+
+    return filtered_list;
+}
